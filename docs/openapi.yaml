@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: Transactions API
+  description: |-
+    A simple api to handle accounts and transactions.
+    
+    [Repository link](https://github.com/costamauricio/transactions-api)
+  version: 1.0.0
+servers:
+  - url: http://localhost:8088/
+tags:
+  - name: accounts
+  - name: transactions
+paths:
+  /accounts:
+    post:
+      tags:
+        - accounts
+      description: Create a new account
+      operationId: addAccount
+      requestBody:
+        description: Create a new account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Invalid input
+  /accounts/{accountId}:
+    get:
+      tags:
+        - accounts
+      description: Returns a single account
+      operationId: getAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: ID of account to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          description: Account not found
+  /transactions:
+    post:
+      tags:
+        - transactions
+      description: Create a new transaction
+      operationId: addTransaction
+      requestBody:
+        description: Create a new transaction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Invalid input
+components:
+  schemas:
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+    AccountRequest:
+      type: object
+      required:
+        - document_number
+      properties:
+        document_number:
+          type: string
+          example: "9743242342333"
+    Account:
+      allOf:
+        - $ref: '#/components/schemas/AccountResponse'
+        - $ref: '#/components/schemas/AccountRequest'
+    TransactionRequest:
+      type: object
+      required:
+        - account_id
+        - operation_type
+        - amount
+      properties:
+        account_id:
+          type: integer
+          example: 10
+        operation_type:
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 2
+        amount:
+          type: number
+          example: 20
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2

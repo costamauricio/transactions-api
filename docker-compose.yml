@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  api:
+    image: transactions-api:latest
+    build: .
+    ports:
+      - "8088:80"
+    volumes:
+      - db:/app/db
+    environment:
+      PORT: 80
+      DATABASE_FILE: db/transactions.db
+    depends_on:
+      - database_schema
+  database_schema:
+    image: transactions-api:latest
+    build: .
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts
+      - db:/app/db
+    command: ["sh", "./scripts/run_schema.sh"]
+
+volumes:
+  db:

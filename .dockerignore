@@ -1,4 +1,3 @@
 .git/
 .env
-.air.toml
-tmp/
+transactions.db
