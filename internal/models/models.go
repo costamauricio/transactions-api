@@ -7,11 +7,24 @@ const (
 	TRANSACTION_TYPE_PAYMENT              TransactionType = 4
 )
 
+// Define the transaction type
 type TransactionType int
 
+// Validate if the transaction type is between the defined types
+func (t TransactionType) IsValid() bool {
+	switch t {
+	case TRANSACTION_TYPE_WITHDRAW,
+		TRANSACTION_TYPE_PAYMENT,
+		TRANSACTION_TYPE_PUSCHASE_CASH,
+		TRANSACTION_TYPE_PUSCHASE_INSTALLMENT:
+		return true
+	}
+	return false
+}
+
 type Account struct {
-	ID            int    `json:"id"`
-	AccountNumber string `json:"account_number,omitempty"`
+	ID             int    `json:"id"`
+	DocumentNumber string `json:"document_number,omitempty"`
 }
 
 type Transaction struct {

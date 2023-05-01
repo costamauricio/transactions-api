@@ -9,6 +9,7 @@ import (
 	"github.com/costamauricio/transactions-api/internal/data-access-test"
 )
 
+// Test the creation of a new account with success
 func TestNewAccountShouldCreateWithSuccess(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Account](t)
 	defer closeFunc()
@@ -34,6 +35,7 @@ func TestNewAccountShouldCreateWithSuccess(t *testing.T) {
 	}
 }
 
+// Test if the NewAccount will handle the prepare statement error
 func TestNewAccountShouldHandlePrepareError(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Account](t)
 	defer closeFunc()
@@ -54,6 +56,7 @@ func TestNewAccountShouldHandlePrepareError(t *testing.T) {
 	}
 }
 
+// Test if the NewAccount will handle a query error
 func TestNewAccountShouldHandleQueryError(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Account](t)
 	defer closeFunc()
@@ -75,6 +78,7 @@ func TestNewAccountShouldHandleQueryError(t *testing.T) {
 	}
 }
 
+// Test if the GetAccount will return the account correctly
 func TestGetAccountShouldReturnWithSuccess(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Account](t)
 	defer closeFunc()
@@ -84,7 +88,7 @@ func TestGetAccountShouldReturnWithSuccess(t *testing.T) {
 	mockedAccountRows := sqlmock.NewRows([]string{"id", "account_number"}).
 		AddRow("2", "test")
 
-	mock.ExpectPrepare("SELECT id, account_number FROM accounts").
+	mock.ExpectPrepare("SELECT id, document_number FROM accounts").
 		WillBeClosed().
 		ExpectQuery().
 		WithArgs(mockedId).
@@ -102,11 +106,12 @@ func TestGetAccountShouldReturnWithSuccess(t *testing.T) {
 		t.Errorf("Expected ID to be %d but got %d", mockedId, account.ID)
 	}
 
-	if account.AccountNumber != "test" {
-		t.Errorf("Expected AccountNumber %s", account.AccountNumber)
+	if account.DocumentNumber != "test" {
+		t.Errorf("Expected DocumentNumber %s", account.DocumentNumber)
 	}
 }
 
+// Test if the GetAccount will handle the prepare statement error
 func TestGetAccountShouldHandlePrepareError(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Account](t)
 	defer closeFunc()
@@ -114,7 +119,7 @@ func TestGetAccountShouldHandlePrepareError(t *testing.T) {
 	mockedId := int(2)
 	mockedError := errors.New("failed to prepare statement")
 
-	mock.ExpectPrepare("SELECT id, account_number FROM accounts").
+	mock.ExpectPrepare("SELECT id, document_number FROM accounts").
 		WillReturnError(mockedError)
 
 	account, err := mockedAccount.GetAccount(mockedId)

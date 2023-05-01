@@ -10,14 +10,15 @@ type Account struct {
 	Pool *sql.DB
 }
 
-func (db *Account) NewAccount(accountNumber string) (int64, error) {
-	query, err := db.Pool.Prepare("INSERT INTO accounts(account_number) VALUES(?)")
+// Insert a new account on the database and returns the insertedId
+func (db *Account) NewAccount(documentNumber string) (int64, error) {
+	query, err := db.Pool.Prepare("INSERT INTO accounts(document_number) VALUES(?)")
 	if err != nil {
 		return 0, err
 	}
 	defer query.Close()
 
-	result, err := query.Exec(accountNumber)
+	result, err := query.Exec(documentNumber)
 	if err != nil {
 		return 0, err
 	}
@@ -27,8 +28,9 @@ func (db *Account) NewAccount(accountNumber string) (int64, error) {
 	return id, nil
 }
 
+// Retrieve an account from the database for the id argument
 func (db *Account) GetAccount(id int) (*models.Account, error) {
-	query, err := db.Pool.Prepare("SELECT id, account_number FROM accounts WHERE id = ?")
+	query, err := db.Pool.Prepare("SELECT id, document_number FROM accounts WHERE id = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +39,10 @@ func (db *Account) GetAccount(id int) (*models.Account, error) {
 	account := &models.Account{}
 
 	row := query.QueryRow(id)
-	err = row.Scan(&account.ID, &account.AccountNumber)
+	err = row.Scan(&account.ID, &account.DocumentNumber)
 
+	// If the error is sql.ErrNoRows means that there is no account for the ID
+	// So we won't return an error, just a nil account
 	if err != nil && err == sql.ErrNoRows {
 		return nil, nil
 	}

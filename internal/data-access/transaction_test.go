@@ -9,6 +9,7 @@ import (
 	"github.com/costamauricio/transactions-api/internal/models"
 )
 
+// Test the creation of a new transaction with success
 func TestNewTransactionShouldCreateWithSuccess(t *testing.T) {
 	mockedAccount, mock, closeFunc := dataAccessTest.GetMockedDatabase[dataAccess.Transaction](t)
 	defer closeFunc()

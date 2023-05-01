@@ -8,12 +8,14 @@ import (
 )
 
 // Interface to identify the types accepted by the generic mock function
-type databaseMocks interface {
+type daoMocksInterface interface {
 	dataAccess.Account | dataAccess.Transaction
 }
 
-// Returns a MockedDAO of type, sqlmock and a closeFunc to tear down the mocks
-func GetMockedDatabase[C databaseMocks](t *testing.T) (*C, sqlmock.Sqlmock, func()) {
+// Spawn a new mocked database connection and inject it into the generic,
+// Will return the MockedDAO for the generic type, a mock object and a closeFunc to tear down the mocks
+// and close the mocked connection, the closeFunc must be called at the end of the current test
+func GetMockedDatabase[C daoMocksInterface](t *testing.T) (*C, sqlmock.Sqlmock, func()) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("Error '%s' when creating the stub connection", err)
